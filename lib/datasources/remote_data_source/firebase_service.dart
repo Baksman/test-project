@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
-import 'package:project/datasources/failure/failure.dart';
-import 'package:project/datasources/failure/success.dart';
+import 'package:project/datasources/source_response/failure.dart';
+import 'package:project/datasources/source_response/success.dart';
 import 'package:project/models/task.dart';
 
 abstract class FirebaseService {
@@ -27,9 +27,8 @@ class FirebaseServiceImpl implements FirebaseService {
           .collection("tasks")
           .doc(taskid)
           .update({"completedAt": Timestamp.now()});
-      return Right(null);
+      return Right(Success());
     } catch (e) {
-      print(e);
       return Left(Failure(e.toString()));
     }
   }
@@ -41,7 +40,6 @@ class FirebaseServiceImpl implements FirebaseService {
       return Right(qs.map((event) =>
           event.docs.map((e) => TaskModel.fromMap(e.data())).toList()));
     } catch (e) {
-      print(e);
       return Left(Failure(e.toString()));
     }
   }
@@ -51,9 +49,7 @@ class FirebaseServiceImpl implements FirebaseService {
     try {
       await firebase.collection("tasks").doc(task.id).set(task.toMap());
       return Right(Success());
-    } catch (e, s) {
-      print(e);
-      print(s);
+    } catch (e) {
       return Left(Failure(e.toString()));
     }
   }
@@ -64,7 +60,6 @@ class FirebaseServiceImpl implements FirebaseService {
       await firebase.collection("tasks").doc(taskId).delete();
       return Right(Success());
     } catch (e) {
-      print(e);
       return Left(Failure(e.toString()));
     }
   }
@@ -78,7 +73,6 @@ class FirebaseServiceImpl implements FirebaseService {
           .update({"completedAt": null});
       return Right(Success());
     } catch (e) {
-      print(e);
       return Left(Failure(e.toString()));
     }
   }
@@ -93,7 +87,6 @@ class FirebaseServiceImpl implements FirebaseService {
           .where((element) => element.isTaskCompleted)
           .toList()));
     } catch (e) {
-      print(e);
       return Left(Failure(e.toString()));
     }
   }

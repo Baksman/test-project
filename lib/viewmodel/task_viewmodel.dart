@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
-import 'package:project/datasources/failure/error.dart';
-import 'package:project/datasources/failure/success.dart';
 import 'package:project/datasources/remote_data_source/firebase_service.dart';
+import 'package:project/datasources/source_response/error.dart';
+import 'package:project/datasources/source_response/success.dart';
 import 'package:project/models/task.dart';
 
 class TaskViewModel extends ChangeNotifier {
@@ -28,7 +28,6 @@ class TaskViewModel extends ChangeNotifier {
 
   void close() {
     _allTaskController.close();
-    // _completedTaskController.close();
   }
 
   Stream<Either<AppError, List<TaskModel>>> getAllTask() {
@@ -74,7 +73,6 @@ class TaskViewModel extends ChangeNotifier {
     final result = await firebaseService.unCompleteTask(taskId);
     _isCompletetaskLoading = false;
     notifyListeners();
-
     return result.fold((l) => Left(AppError(l.message)), (r) => Right(r));
   }
 

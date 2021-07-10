@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
-import 'package:project/datasources/failure/error.dart';
+import 'package:project/datasources/source_response/error.dart';
 import 'package:project/models/task.dart';
 import 'package:project/ui/screens/add_taskscreen.dart';
 import 'package:project/ui/widget/snackbar_utils.dart';
@@ -30,9 +30,6 @@ class TasksPage extends StatelessWidget {
               ? taskProvider.getAllTask()
               : taskProvider.getCompletedTask(),
           builder: (ctx, snapshot) {
-            if (snapshot.hasError) {
-              return Text(snapshot.error);
-            }
             if (!snapshot.hasData) {
               return Center(
                 child: CircularProgressIndicator(),
