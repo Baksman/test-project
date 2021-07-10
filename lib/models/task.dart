@@ -10,24 +10,30 @@ class TaskModel {
   String description;
   // timestamp because  the users device date might be incorrect
   Timestamp completedAt;
-
+  // if task is created completed
+  final bool isCompleted;
   bool get isTaskCompleted => completedAt != null;
 
   TaskModel({
-    @required this.id,
+    this.id,
     @required this.title,
+    @required this.isCompleted,
     @required this.description,
-    @required this.completedAt,
-  });
+    this.completedAt,
+  }) {
+    id = id ?? Uuid().v4();
+  }
 
   TaskModel copyWith({
     String id,
     String title,
     String description,
     Timestamp completedAt,
+    bool isCompleted
   }) {
     return TaskModel(
       id: id ?? this.id,
+      isCompleted: isCompleted,
       title: title ?? this.title,
       description: description ?? this.description,
       completedAt: completedAt ?? this.completedAt,
@@ -36,20 +42,21 @@ class TaskModel {
 
   Map<String, dynamic> toMap() {
     return {
-      'id': Uuid().v4(),
+      'id': id,
       'title': title,
       'description': description,
-      'completedAt': completedAt,
+      'completedAt': isCompleted ? Timestamp.now() : null,
+      "isCompleted": isCompleted
     };
   }
 
   factory TaskModel.fromMap(Map<String, dynamic> map) {
     return TaskModel(
-      id: map['id'],
-      title: map['title'],
-      description: map['description'],
-      completedAt: map['completedAt'],
-    );
+        id: map['id'],
+        title: map['title'],
+        description: map['description'],
+        completedAt: map['completedAt'],
+        isCompleted: map["isCompleted"]);
   }
 
   String toJson() => json.encode(toMap());

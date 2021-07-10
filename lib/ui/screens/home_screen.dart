@@ -2,32 +2,35 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
 import 'package:project/datasources/failure/error.dart';
 import 'package:project/models/item.dart';
+import 'package:project/ui/screens/home_screen_details.dart';
 import 'package:project/viewmodel/items_viewmodel.dart';
 import 'package:provider/provider.dart';
 import 'package:search_widget/search_widget.dart';
 
 class HomePage extends StatelessWidget {
+  final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
+      GlobalKey<ScaffoldMessengerState>();
   @override
   Widget build(BuildContext context) {
     final itemProvider = Provider.of<ItemViewmodel>(context);
-    return Scaffold(
-      appBar: AppBar(),
-      body: FutureBuilder<Either<AppError, List<Item>>>(
-        future: itemProvider.getItem(),
-        builder: (ctx, snapshot) {
-          if (snapshot.hasError) {
-            return Text(snapshot.error.toString());
-          }
-          if (!snapshot.hasData) {
-            return Center(
-              child: CircularProgressIndicator(),
+    return ScaffoldMessenger(
+      key: scaffoldMessengerKey,
+      child: Scaffold(
+        appBar: AppBar(),
+        body: FutureBuilder<Either<AppError, List<Item>>>(
+          future: itemProvider.getItem(),
+          builder: (ctx, snapshot) {
+            if (!snapshot.hasData) {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+            return snapshot.data.fold(
+              (AppError error) => Center(child: Text(error.message)),
+              (List<Item> items) => itemsWidget(items, context),
             );
-          }
-          return snapshot.data.fold(
-            (AppError error) => Center(child: Text(error.message)),
-            (List<Item> items) => itemsWidget(items, context),
-          );
-        },
+          },
+        ),
       ),
     );
   }
@@ -66,6 +69,13 @@ class HomePage extends StatelessWidget {
               itemCount: items.length,
               itemBuilder: (ctx, index) {
                 return ListTile(
+                  onTap: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (ctx) {
+                      return HomeScreenDetails(
+                        item: items[index],
+                      );
+                    }));
+                  },
                   leading: Text(items[index].id.toString()),
                   title: Text(items[index].title),
                 );
@@ -99,7 +109,12 @@ class MyTextField extends StatelessWidget {
           focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(color: Theme.of(context).primaryColor),
           ),
-          suffixIcon: Icon(Icons.search),
+          suffixIcon: IconButton(
+            icon: Icon(Icons.clear),
+            onPressed: () {
+              controller.clear();
+            },
+          ),
           border: InputBorder.none,
           hintText: "Search here...",
           contentPadding: const EdgeInsets.only(

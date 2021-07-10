@@ -4,10 +4,12 @@ import 'package:project/datasources/failure/failure.dart';
 import 'package:project/models/item.dart';
 import 'package:localstorage/localstorage.dart';
 
+enum dataSources { internet, local }
+
 abstract class LocalService {
   Future<void> saveItem(List<dynamic> items);
   Future<Either<Failure, List<Item>>> getItems();
-  Future<bool> dataSource();
+  Future<dataSources> dataSource();
 }
 
 class LocalServiceImpl implements LocalService {
@@ -29,9 +31,9 @@ class LocalServiceImpl implements LocalService {
     }
   }
 
-  Future<bool> dataSource() async {
+  Future<dataSources> dataSource() async {
     final itemsMap = storage.getItem("item");
 
-    return itemsMap == null;
+    return itemsMap == null ? dataSources.internet : dataSources.local;
   }
 }

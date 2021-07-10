@@ -33,7 +33,7 @@ class RemoteServiceImpl implements RemoteService {
     } on SocketException {
       return Left(Failure("Internet connection error"));
     } on HttpException {
-      return Left(Failure("Couldn't fetch data"));
+      return Left(Failure("Couldn't fetch data from internet"));
     }
   }
 }

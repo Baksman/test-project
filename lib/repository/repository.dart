@@ -12,8 +12,10 @@ class Repository {
 
   Repository({this.localDataSource, this.remoteService});
   Future<Either<AppError, List<Item>>> getItem() async {
-    bool isInternetSource = await localDataSource.dataSource();
-    if (isInternetSource) {
+    
+    dataSources isInternetSource = await localDataSource.dataSource();
+
+    if (isInternetSource == dataSources.internet) {
       final items = await remoteService.getItem();
       return items.fold((l) => Left(AppError(l.message)), (r) => Right([...r]));
     } else {

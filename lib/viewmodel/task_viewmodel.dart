@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
 import 'package:project/datasources/failure/error.dart';
+import 'package:project/datasources/failure/success.dart';
 import 'package:project/datasources/remote_data_source/firebase_service.dart';
 import 'package:project/models/task.dart';
 
@@ -9,45 +12,77 @@ class TaskViewModel extends ChangeNotifier {
   bool get isLoading => _isLoading;
   bool _isCompletetaskLoading = false;
   bool get isCompletetaskLoading => _isCompletetaskLoading;
-
+  StreamController _allTaskController =
+      StreamController<Either<AppError, List<TaskModel>>>.broadcast();
+  // StreamController _completedTaskController =
+  //     StreamController<Either<AppError, List<TaskModel>>>.broadcast();
   final FirebaseService firebaseService;
 
   TaskViewModel(this.firebaseService);
-  Future<Either<AppError, Null>> addTask(TaskModel task) async {
+  Future<Either<AppError, Success>> addTask(TaskModel task) async {
     _setState(true);
     final result = await firebaseService.addTask(task);
     _setState(false);
     return result.fold((l) => Left(AppError(l.message)), (r) => Right(r));
   }
 
-  Either<AppError, Stream<List<TaskModel>>> getAllTask() {
-    return firebaseService
-        .getAllTask()
-        .fold((l) => Left(AppError(l.message)), (r) => Right(r));
+  void close() {
+    _allTaskController.close();
+    // _completedTaskController.close();
   }
 
-  Future<Either<AppError, Null>> completeTask(String taskId) async {
+  Stream<Either<AppError, List<TaskModel>>> getAllTask() {
+    return firebaseService.getAllTask().fold((l) {
+      _allTaskController.sink
+          .add(Left<AppError, List<TaskModel>>(AppError(l.message)));
+      return _allTaskController.stream;
+    }, (r) {
+      r.listen((event) {
+        _allTaskController.sink.add(Right<AppError, List<TaskModel>>(event));
+      });
+
+      return _allTaskController.stream;
+    });
+  }
+
+  Stream<Either<AppError, List<TaskModel>>> getCompletedTask() {
+    return firebaseService.getCompletedTask().fold((l) {
+      _allTaskController.sink
+          .add(Left<AppError, List<TaskModel>>(AppError(l.message)));
+      return _allTaskController.stream;
+    }, (r) {
+      r.listen((event) {
+        _allTaskController.sink.add(Right<AppError, List<TaskModel>>(event));
+      });
+      return _allTaskController.stream;
+    });
+  }
+
+  Future<Either<AppError, Success>> completeTask(String taskId) async {
     _isCompletetaskLoading = true;
     notifyListeners();
     final result = await firebaseService.completeTask(taskId);
     _isCompletetaskLoading = false;
     notifyListeners();
+
     return result.fold((l) => Left(AppError(l.message)), (r) => Right(r));
   }
 
-  Future<Either<AppError, Null>> unCompleteTask(String taskId) async {
+  Future<Either<AppError, Success>> unCompleteTask(String taskId) async {
     _isCompletetaskLoading = true;
     notifyListeners();
     final result = await firebaseService.unCompleteTask(taskId);
     _isCompletetaskLoading = false;
     notifyListeners();
+
     return result.fold((l) => Left(AppError(l.message)), (r) => Right(r));
   }
 
-  Future<Either<AppError, Null>> deleteTask(String taskId) async {
+  Future<Either<AppError, Success>> deleteTask(String taskId) async {
     _setState(true);
     final result = await firebaseService.deleteTask(taskId);
     _setState(false);
+
     return result.fold((l) => Left(AppError(l.message)), (r) => Right(r));
   }
 
