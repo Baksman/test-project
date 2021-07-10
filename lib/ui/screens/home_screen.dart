@@ -1,6 +1,5 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
-
 import 'package:project/datasources/source_response/error.dart';
 import 'package:project/models/item.dart';
 import 'package:project/ui/screens/home_screen_details.dart';
@@ -17,7 +16,7 @@ class HomePage extends StatelessWidget {
     return ScaffoldMessenger(
       key: scaffoldMessengerKey,
       child: Scaffold(
-        appBar: AppBar(),
+        appBar: AppBar(title: Text("Home"),),
         body: FutureBuilder<Either<AppError, List<Item>>>(
           future: itemProvider.getItem(),
           builder: (ctx, snapshot) {

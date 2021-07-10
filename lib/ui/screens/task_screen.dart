@@ -10,7 +10,6 @@ import 'package:provider/provider.dart';
 class TasksPage extends StatelessWidget {
   final bool isAll;
   
-
   const TasksPage({Key key, this.isAll}) : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -100,7 +99,6 @@ class _TaskWidget extends StatelessWidget {
           _delete(context);
         },
       ),
-      // onTap: () => _view(context),
     );
   }
 }

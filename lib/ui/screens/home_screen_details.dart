@@ -15,23 +15,25 @@ class HomeScreenDetails extends StatelessWidget {
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(10),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text("title"),
-              Text(item.title),
-              SizedBox(
-                height: 20,
-              ),
-              Text("body"),
-              Text(item.body),
-              SizedBox(
-                height: 20,
-              ),
-              Text("Usesr id"),
-              Text(item.userId.toString()),
-            ],
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text("title"),
+                Text(item.title),
+                SizedBox(
+                  height: 20,
+                ),
+                Text("body"),
+                Text(item.body),
+                SizedBox(
+                  height: 20,
+                ),
+                Text("Usesr id"),
+                Text(item.userId.toString()),
+              ],
+            ),
           ),
         ),
       ),

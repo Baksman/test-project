@@ -23,8 +23,6 @@ void main() {
   });
 
   group('getItems', () {
-   
-
     test(
       'should return Right<Item> from LocalStorage when there is one in the cache',
       () async {

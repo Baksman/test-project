@@ -1,6 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:project/datasources/utils/mediaquery_ext.dart';
 import 'package:project/models/task.dart';
 import 'package:project/ui/widget/snackbar_utils.dart';
 import 'package:project/viewmodel/task_viewmodel.dart';
@@ -50,6 +51,7 @@ class _AddTaskPage extends State<AddTaskPage> {
         body: Form(
           key: _formKey,
           child: Container(
+            height: context.height,
             padding: const EdgeInsets.all(10),
             child: Column(
               children: [
