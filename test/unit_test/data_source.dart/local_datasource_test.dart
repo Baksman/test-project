@@ -56,4 +56,29 @@ void main() {
       },
     );
   });
+
+  group("data source", () {
+    test("Should  return dataSources.internet enum if storage.getItem is null",
+        () async {
+      final tdataSource = dataSources.internet;
+      when(mockLocalStorage.getItem("item")).thenReturn(null);
+
+      final result = await dataSource.dataSource();
+
+      expect(tdataSource, result);
+    });
+
+    test(
+        "Should  return dataSources.local enum if storage.getItem is not null i.e a list",
+        () async {
+      final tdataSource = dataSources.local;
+// arrange
+      when(mockLocalStorage.getItem("item"))
+          .thenReturn(json.decode(fixture("number.json")));
+
+      final result = await dataSource.dataSource();
+
+      expect(tdataSource, result);
+    });
+  });
 }

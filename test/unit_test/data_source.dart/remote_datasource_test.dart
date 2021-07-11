@@ -12,10 +12,10 @@ class MockDio extends mock.Mock implements dio.Dio {}
 
 void main() async {
   RemoteServiceImpl remoteServiceImpl;
-  // dio.Dio diocl = dio.Dio();
+  dio.Dio diocl = dio.Dio();
   MockDio mockDio;
   final dioAdapter = DioAdapter();
-  // dio.httpClientAdapter = dioAdapter;
+  diocl.httpClientAdapter = dioAdapter;
   MockLocalStorage mockLocalStorage;
   LocalServiceImpl dataSource;
   final incorrectUrl = "https://jsonplaceholder.typ8488fnhg";
@@ -57,16 +57,14 @@ void main() async {
       () async {
         // MockHttpClient()
         // arrange
-        setUpMockHttpClientSuccess200();
+        setUpMockHttpClientSuccess400();
+
+      await  diocl.get(incorrectUrl);
         // act
         remoteServiceImpl.getItem();
         // assert
         mock.verifyNever(mockDio.get(any));
       },
     );
-
-    test("", () {
-      
-    });
   });
 }

@@ -34,7 +34,6 @@ class LocalServiceImpl implements LocalService {
 
   Future<dataSources> dataSource() async {
     final itemsMap = await storage.getItem("item");
-
     return itemsMap == null ? dataSources.internet : dataSources.local;
   }
 }

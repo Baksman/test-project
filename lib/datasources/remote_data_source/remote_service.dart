@@ -19,9 +19,11 @@ class RemoteServiceImpl implements RemoteService {
   Future<Either<Failure, List<Item>>> getItem() async {
     final url = baseUrl + "/posts";
     try {
+      
       List<Item> items = [];
-     
+
       Response response = await Dio().get(url);
+
       if (response.statusCode == 200) {
         localService.saveItem(response.data);
         response.data
