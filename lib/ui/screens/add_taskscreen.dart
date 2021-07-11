@@ -1,9 +1,10 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:project/datasources/utils/mediaquery_ext.dart';
+
 import 'package:project/models/task.dart';
 import 'package:project/ui/widget/snackbar_utils.dart';
+import 'package:project/utils/mediaquery_ext.dart';
 import 'package:project/viewmodel/task_viewmodel.dart';
 import 'package:provider/provider.dart';
 
@@ -15,7 +16,6 @@ class AddTaskPage extends StatefulWidget {
   @override
   _AddTaskPage createState() => _AddTaskPage();
 }
-
 class _AddTaskPage extends State<AddTaskPage> {
   TextEditingController _titleController;
   TextEditingController _descriptionController;
