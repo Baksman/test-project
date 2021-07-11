@@ -11,7 +11,8 @@ abstract class RemoteService {
 
 class RemoteServiceImpl implements RemoteService {
   final LocalService localService;
-  RemoteServiceImpl(this.localService);
+  final Dio dio;
+  RemoteServiceImpl(this.localService,this.dio);
   static const String baseUrl = "https://jsonplaceholder.typicode.com";
 
 // using either monad to for better error handling
@@ -19,10 +20,9 @@ class RemoteServiceImpl implements RemoteService {
   Future<Either<Failure, List<Item>>> getItem() async {
     final url = baseUrl + "/posts";
     try {
-      
       List<Item> items = [];
 
-      Response response = await Dio().get(url);
+      Response response = await dio.get(url);
 
       if (response.statusCode == 200) {
         localService.saveItem(response.data);
