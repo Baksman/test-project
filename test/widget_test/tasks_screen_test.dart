@@ -17,9 +17,9 @@ void main() async {
   //  tester.binding.scheduleWarmUpFrame();
 
   setUpAll(() async {
-    di.setUp();
     TestWidgetsFlutterBinding.ensureInitialized();
     await fire.Firebase.initializeApp();
+    di.setUp();
   });
 
   testWidgets('Test all task screen', (WidgetTester tester) async {
@@ -60,7 +60,7 @@ Widget wrapper({@required Widget child}) {
     providers: [
       ChangeNotifierProvider(create: (_) => BottomNavbarViewmodel()),
       ChangeNotifierProvider(
-          create: (_) => TaskViewModel(FirebaseServiceImpl())),
+          create: (_) => TaskViewModel(sl.get<FirebaseService>())),
       ChangeNotifierProvider(
           create: (_) => ItemViewmodel(sl.get<Repository>())),
     ],
