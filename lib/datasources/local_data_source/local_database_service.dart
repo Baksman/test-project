@@ -24,7 +24,7 @@ class LocalServiceImpl implements LocalService {
   Future<Either<Failure, List<Item>>> getItems() async {
     List<Item> items = [];
     try {
-      final itemsMap = storage.getItem("item");
+      final itemsMap = await storage.getItem("item");
       itemsMap.map((e) => items.add(Item.fromJson(e))).toList();
       return Right(items);
     } catch (e) {
@@ -33,7 +33,7 @@ class LocalServiceImpl implements LocalService {
   }
 
   Future<dataSources> dataSource() async {
-    final itemsMap = storage.getItem("item");
+    final itemsMap = await storage.getItem("item");
 
     return itemsMap == null ? dataSources.internet : dataSources.local;
   }

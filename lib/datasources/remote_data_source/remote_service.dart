@@ -1,10 +1,8 @@
 import 'dart:io';
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
-
 import 'package:project/datasources/local_data_source/local_database_service.dart';
 import 'package:project/datasources/source_response/failure.dart';
-// import 'package:project/failure/failure.dart';
 import 'package:project/models/item.dart';
 
 abstract class RemoteService {
@@ -22,6 +20,7 @@ class RemoteServiceImpl implements RemoteService {
     final url = baseUrl + "/posts";
     try {
       List<Item> items = [];
+     
       Response response = await Dio().get(url);
       if (response.statusCode == 200) {
         localService.saveItem(response.data);

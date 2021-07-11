@@ -1,13 +1,10 @@
-import 'dart:convert';
 import 'package:dio/dio.dart' as dio;
 import 'package:http_mock_adapter/http_mock_adapter.dart';
 import 'package:mockito/mockito.dart' as mock;
 import 'package:flutter_test/flutter_test.dart';
-import 'package:matcher/matcher.dart';
 import 'package:mockito/mockito.dart';
 import 'package:project/datasources/local_data_source/local_database_service.dart';
 import 'package:project/datasources/remote_data_source/remote_service.dart';
-import 'package:project/models/item.dart';
 import '../fixture/number_reaader.dart';
 import 'local_datasource_test.dart';
 
@@ -55,8 +52,6 @@ void main() async {
   }
 
   group('getItem', () {
-    // final tItme = Item.fromJson(json.decode(fixture('trivia.json')));
-
     test(
       '''verify  never called with incorrect incorrectUrl''',
       () async {
@@ -69,5 +64,9 @@ void main() async {
         mock.verifyNever(mockDio.get(any));
       },
     );
+
+    test("", () {
+      
+    });
   });
 }
