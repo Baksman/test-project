@@ -54,59 +54,63 @@ class _AddTaskPage extends State<AddTaskPage> {
           child: Container(
             height: context.height,
             padding: const EdgeInsets.all(10),
-            child: Column(
-              children: [
-                TextFormField(
-                  validator: _validator,
-                  controller: _titleController,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Title',
-                  ),
-                ),
-                SizedBox(height: 10),
-                TextFormField(
-                  controller: _descriptionController,
-                  validator: _validator,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Description',
-                  ),
-                  minLines: 5,
-                  maxLines: 10,
-                ),
-                SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('Completed ?'),
-                    CupertinoSwitch(
-                      value: isCompleted,
-                      onChanged: (val) {
-                        setState(() {
-                          isCompleted = val;
-                        });
-                      },
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  TextFormField(
+                    validator: _validator,
+                    controller: _titleController,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Title',
                     ),
-                  ],
-                ),
-                Spacer(),
-                ElevatedButton(
-                  onPressed: provider.isLoading
-                      ? null
-                      : () async {
-                          if (_formKey.currentState.validate()) {
-                            await submit(provider);
-                          }
+                  ),
+                  SizedBox(height: 10),
+                  TextFormField(
+                    controller: _descriptionController,
+                    validator: _validator,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Description',
+                    ),
+                    minLines: 5,
+                    maxLines: 10,
+                  ),
+                  SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('Completed ?'),
+                      CupertinoSwitch(
+                        value: isCompleted,
+                        onChanged: (val) {
+                          setState(() {
+                            isCompleted = val;
+                          });
                         },
-                  child: Center(
-                      child: provider.isLoading
-                          ? CircularProgressIndicator(
-                              backgroundColor: Colors.teal,
-                            )
-                          : Text(widget.isNew ? 'Create' : 'Update')),
-                )
-              ],
+                      ),
+                    ],
+                  ),
+
+                  SizedBox(height: 50,),
+                  // Spacer(),
+                  ElevatedButton(
+                    onPressed: provider.isLoading
+                        ? null
+                        : () async {
+                            if (_formKey.currentState.validate()) {
+                              await submit(provider);
+                            }
+                          },
+                    child: Center(
+                        child: provider.isLoading
+                            ? CircularProgressIndicator(
+                                backgroundColor: Colors.teal,
+                              )
+                            : Text(widget.isNew ? 'Create' : 'Update')),
+                  )
+                ],
+              ),
             ),
           ),
         ),
