@@ -1,11 +1,12 @@
 import 'dart:convert';
-
 import 'package:dio/dio.dart' as dio;
 import 'package:mockito/mockito.dart' as mock;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:project/datasources/local_data_source/local_database_service.dart';
 import 'package:project/datasources/remote_data_source/remote_service.dart';
+import 'package:project/datasources/source_response/failure.dart';
+import 'package:project/models/item.dart';
 import '../fixture/number_reaader.dart';
 import 'local_datasource_test.dart';
 
@@ -31,15 +32,25 @@ void main() async {
     mock.when(mockDio.get(any)).thenAnswer((_) async => dio.Response(
         data: json.decode(fixture('number.json')),
         statusCode: 200,
+        statusMessage: "success",
         requestOptions: dio.RequestOptions(method: "Get", path: url)));
   }
 
+  void setUpMockHttpClientSuccess404() async {
+    mock.when(mockDio.get(any)).thenAnswer((_) async => dio.Response(
+        data: null,
+        statusCode: 404,
+        statusMessage: "Url not found",
+        requestOptions: dio.RequestOptions(
+          method: "Get",
+          path: url,
+        )));
+  }
 
   group('getItem', () {
     test(
       '''verify get method gets called with correct url''',
       () async {
-        // MockHttpClient()
         // arrange
         setUpMockHttpClientSuccess200();
         // act
@@ -49,4 +60,33 @@ void main() async {
       },
     );
   });
+
+  test(
+    'should return Iten when the response code is 200 (success)',
+    () async {
+      // arrange
+      setUpMockHttpClientSuccess200();
+      // act
+      final result = await remoteServiceImpl.getItem();
+
+      List<Item> items = result.fold((l) => null, (r) => r);
+      // assert
+      expect(items, isA<List<Item>>());
+    },
+  );
+
+  test(
+    'should throw an exception when the response code is 404 or other',
+    () async {
+      // arrange
+      setUpMockHttpClientSuccess404();
+      // act
+      final result = await remoteServiceImpl.getItem();
+
+      Failure failure = result.fold((l) => l, (r) => null);
+      print(failure.message);
+      // assert
+      expect(failure, isA<Failure>());
+    },
+  );
 }

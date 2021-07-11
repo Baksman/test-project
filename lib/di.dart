@@ -10,7 +10,7 @@ import 'datasources/remote_data_source/firebase_service.dart';
 final sl = GetIt.instance;
 
 void setUp() {
-  // external package
+  // external packages
   LocalStorage storage = new LocalStorage('todo_app');
   final Dio dio = Dio();
   final firebase = FirebaseFirestore.instance;
