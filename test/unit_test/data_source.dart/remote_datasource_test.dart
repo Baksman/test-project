@@ -17,6 +17,7 @@ void main() async {
   MockDio mockDio;
   MockLocalStorage mockLocalStorage;
   LocalServiceImpl dataSource;
+  final failureMessage = "Not found";
   final url = "https://jsonplaceholder.typicode.com/posts";
   setUp(() {
     mockLocalStorage = MockLocalStorage();
@@ -40,7 +41,7 @@ void main() async {
     mock.when(mockDio.get(any)).thenAnswer((_) async => dio.Response(
         data: null,
         statusCode: 404,
-        statusMessage: "Url not found",
+        statusMessage: failureMessage,
         requestOptions: dio.RequestOptions(
           method: "Get",
           path: url,
@@ -59,34 +60,36 @@ void main() async {
         mock.verify(mockDio.get(url));
       },
     );
+
+    test(
+      'should return Iten when the response code is 200 (success)',
+      () async {
+        // arrange
+        setUpMockHttpClientSuccess200();
+        // act
+        final result = await remoteServiceImpl.getItem();
+
+        List<Item> items = result.fold((l) => null, (r) => r);
+        // assert
+        expect(items, isA<List<Item>>());
+      },
+    );
+
+    test(
+      'should return failure when the response code is 404 ',
+      () async {
+        // arrange
+        setUpMockHttpClientSuccess404();
+        // act
+        final result = await remoteServiceImpl.getItem();
+
+        Failure failure = result.fold((l) => l, (r) => null);
+
+        // assert
+        expect(failure.message, failureMessage);
+
+        expect(failure, isA<Failure>());
+      },
+    );
   });
-
-  test(
-    'should return Iten when the response code is 200 (success)',
-    () async {
-      // arrange
-      setUpMockHttpClientSuccess200();
-      // act
-      final result = await remoteServiceImpl.getItem();
-
-      List<Item> items = result.fold((l) => null, (r) => r);
-      // assert
-      expect(items, isA<List<Item>>());
-    },
-  );
-
-  test(
-    'should throw an exception when the response code is 404 or other',
-    () async {
-      // arrange
-      setUpMockHttpClientSuccess404();
-      // act
-      final result = await remoteServiceImpl.getItem();
-
-      Failure failure = result.fold((l) => l, (r) => null);
-      print(failure.message);
-      // assert
-      expect(failure, isA<Failure>());
-    },
-  );
 }
