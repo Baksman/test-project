@@ -132,7 +132,6 @@ class _AddTaskPage extends State<AddTaskPage> {
           title: _titleController.text,
           description: _descriptionController.text,
           isCompleted: isCompleted
-          // completedAt: isCompleted ? Timestamp.now() : null
           );
     } else {
       task = TaskModel(

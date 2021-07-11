@@ -19,7 +19,9 @@ abstract class FirebaseService {
 }
 
 class FirebaseServiceImpl implements FirebaseService {
-  final firebase = FirebaseFirestore.instance;
+  final FirebaseFirestore firebase;
+
+  FirebaseServiceImpl(this.firebase);
   @override
   Future<Either<Failure, Success>> completeTask(String taskid) async {
     try {

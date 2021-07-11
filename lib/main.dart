@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:project/repository/repository.dart';
@@ -11,21 +12,23 @@ import 'datasources/remote_data_source/firebase_service.dart';
 import 'di.dart';
 
 void main() async {
-  setUp();
+ 
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+   setUp();
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
+   final firebase = FirebaseFirestore.instance;
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => BottomNavbarViewmodel()),
         ChangeNotifierProvider(
-            create: (_) => TaskViewModel(FirebaseServiceImpl())),
+            create: (_) => TaskViewModel(sl.get<FirebaseService>())),
         ChangeNotifierProvider(
             create: (_) => ItemViewmodel(sl.get<Repository>())),
       ],
