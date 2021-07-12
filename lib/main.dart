@@ -12,18 +12,18 @@ import 'datasources/remote_data_source/firebase_service.dart';
 import 'di.dart';
 
 void main() async {
- 
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-   setUp();
+  setUp();
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
-   final firebase = FirebaseFirestore.instance;
+  final firebase = FirebaseFirestore.instance;
   @override
   Widget build(BuildContext context) {
+
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => BottomNavbarViewmodel()),

@@ -9,13 +9,14 @@ import 'package:provider/provider.dart';
 
 class TasksPage extends StatelessWidget {
   final bool isAll;
-  
+
   const TasksPage({Key key, this.isAll}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     final taskProvider = Provider.of<TaskViewModel>(context);
     return Scaffold(
         appBar: AppBar(
+          key: Key("appbar"),
           title: Text(isAll ? "All tasks" : "Completed tasks"),
           actions: [
             IconButton(
@@ -31,10 +32,16 @@ class TasksPage extends StatelessWidget {
           builder: (ctx, snapshot) {
             if (!snapshot.hasData) {
               return Center(
-                child: CircularProgressIndicator(),
+                child: CircularProgressIndicator(
+                  key: Key("progress"),
+                ),
               );
             }
-            return snapshot.data.fold((l) => Text(l.message), (r) {
+            return snapshot.data.fold(
+                (l) => Text(
+                      l.message,
+                      key: Key("fail"),
+                    ), (r) {
               if (r.isEmpty) {
                 return Center(
                   child: isAll
@@ -50,6 +57,7 @@ class TasksPage extends StatelessWidget {
 
   Widget _itemWidget(List<TaskModel> taskModel, taskProvider) {
     return ListView.builder(
+        key: Key("listv"),
         itemCount: taskModel.length,
         itemBuilder: (ctx, index) {
           return _TaskWidget(taskModel[index], taskProvider);

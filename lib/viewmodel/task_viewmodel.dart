@@ -7,7 +7,18 @@ import 'package:project/datasources/source_response/error.dart';
 import 'package:project/datasources/source_response/success.dart';
 import 'package:project/models/task.dart';
 
-class TaskViewModel extends ChangeNotifier {
+abstract class TaskViewModelBaseClass extends ChangeNotifier {
+  Future<Either<AppError, Success>> addTask(TaskModel task) ;
+  Stream<Either<AppError, List<TaskModel>>> getAllTask() ;
+  Stream<Either<AppError, List<TaskModel>>> getCompletedTask() ;
+  Future<Either<AppError, Success>> deleteTask(String taskId) ;
+  Future<Either<AppError, Success>> completeTask(String taskId) ;
+  Future<Either<AppError, Success>> unCompleteTask(String taskId) ;
+}
+
+
+
+class TaskViewModel extends ChangeNotifier implements TaskViewModelBaseClass {
   bool _isLoading = false;
   bool get isLoading => _isLoading;
   bool _isCompletetaskLoading = false;
