@@ -8,19 +8,22 @@ import 'package:project/datasources/source_response/success.dart';
 import 'package:project/models/task.dart';
 
 abstract class TaskViewModelBaseClass extends ChangeNotifier {
-  Future<Either<AppError, Success>> addTask(TaskModel task) ;
-  Stream<Either<AppError, List<TaskModel>>> getAllTask() ;
-  Stream<Either<AppError, List<TaskModel>>> getCompletedTask() ;
-  Future<Either<AppError, Success>> deleteTask(String taskId) ;
-  Future<Either<AppError, Success>> completeTask(String taskId) ;
-  Future<Either<AppError, Success>> unCompleteTask(String taskId) ;
+  Future<Either<AppError, Success>> addTask(TaskModel task);
+  Stream<Either<AppError, List<TaskModel>>> getAllTask();
+  Stream<Either<AppError, List<TaskModel>>> getCompletedTask();
+  Future<Either<AppError, Success>> deleteTask(String taskId);
+  Future<Either<AppError, Success>> completeTask(String taskId);
+  Future<Either<AppError, Success>> unCompleteTask(String taskId);
 }
-
-
 
 class TaskViewModel extends ChangeNotifier implements TaskViewModelBaseClass {
   bool _isLoading = false;
   bool get isLoading => _isLoading;
+  set isLoading(bool isLoading) {
+    isLoading = _isLoading;
+    notifyListeners();
+  }
+
   bool _isCompletetaskLoading = false;
   bool get isCompletetaskLoading => _isCompletetaskLoading;
   StreamController _allTaskController =
@@ -32,8 +35,11 @@ class TaskViewModel extends ChangeNotifier implements TaskViewModelBaseClass {
   TaskViewModel(this.firebaseService);
   Future<Either<AppError, Success>> addTask(TaskModel task) async {
     _setState(true);
+    // print("1st $_isLoading");
     final result = await firebaseService.addTask(task);
     _setState(false);
+    // print("2nd $_isLoading");
+
     return result.fold((l) => Left(AppError(l.message)), (r) => Right(r));
   }
 

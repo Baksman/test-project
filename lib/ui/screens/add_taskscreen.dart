@@ -1,4 +1,3 @@
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -16,6 +15,7 @@ class AddTaskPage extends StatefulWidget {
   @override
   _AddTaskPage createState() => _AddTaskPage();
 }
+
 class _AddTaskPage extends State<AddTaskPage> {
   TextEditingController _titleController;
   TextEditingController _descriptionController;
@@ -23,7 +23,7 @@ class _AddTaskPage extends State<AddTaskPage> {
   final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();
   final _formKey = GlobalKey<FormState>();
-  
+
   @override
   void initState() {
     _titleController =
@@ -48,7 +48,9 @@ class _AddTaskPage extends State<AddTaskPage> {
     return ScaffoldMessenger(
       key: scaffoldMessengerKey,
       child: Scaffold(
-        appBar: AppBar(),
+        appBar: AppBar(
+          key: Key("add-task"),
+        ),
         body: Form(
           key: _formKey,
           child: Container(
@@ -58,6 +60,7 @@ class _AddTaskPage extends State<AddTaskPage> {
               child: Column(
                 children: [
                   TextFormField(
+                    key: Key("input1"),
                     validator: _validator,
                     controller: _titleController,
                     decoration: InputDecoration(
@@ -67,6 +70,7 @@ class _AddTaskPage extends State<AddTaskPage> {
                   ),
                   SizedBox(height: 10),
                   TextFormField(
+                    key: Key("input2"),
                     controller: _descriptionController,
                     validator: _validator,
                     decoration: InputDecoration(
@@ -92,9 +96,12 @@ class _AddTaskPage extends State<AddTaskPage> {
                     ],
                   ),
 
-                  SizedBox(height: 50,),
+                  SizedBox(
+                    height: 50,
+                  ),
                   // Spacer(),
                   ElevatedButton(
+                    key: Key("submit"),
                     onPressed: provider.isLoading
                         ? null
                         : () async {
@@ -106,8 +113,12 @@ class _AddTaskPage extends State<AddTaskPage> {
                         child: provider.isLoading
                             ? CircularProgressIndicator(
                                 backgroundColor: Colors.teal,
+                                key: Key("progress"),
                               )
-                            : Text(widget.isNew ? 'Create' : 'Update')),
+                            : Text(
+                                widget.isNew ? 'Create' : 'Update',
+                                key: Key("btn-text"),
+                              )),
                   )
                 ],
               ),
@@ -131,8 +142,7 @@ class _AddTaskPage extends State<AddTaskPage> {
       task = widget.task.copyWith(
           title: _titleController.text,
           description: _descriptionController.text,
-          isCompleted: isCompleted
-          );
+          isCompleted: isCompleted);
     } else {
       task = TaskModel(
         title: _titleController.text,
@@ -141,9 +151,15 @@ class _AddTaskPage extends State<AddTaskPage> {
       );
     }
 
-    await taskViewModel.addTask(task);
-    showKeySnackbar(
-        widget.isNew ? "Created successfully" : "Updated successfully",
-        scaffoldMessengerKey);
+    final result = await taskViewModel.addTask(task);
+    result.fold(
+        (l) => showKeySnackbar(
+            widget.isNew
+                ? "Error occured couldnt create successfully"
+                : "Error occured couldnt update successfully",
+            scaffoldMessengerKey),
+        (r) => showKeySnackbar(
+            widget.isNew ? "Created successfully" : "Updated successfully",
+            scaffoldMessengerKey));
   }
 }

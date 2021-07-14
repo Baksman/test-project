@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
 import 'package:project/datasources/source_response/error.dart';
+import 'package:project/datasources/source_response/success.dart';
 import 'package:project/models/task.dart';
 import 'package:project/ui/screens/add_taskscreen.dart';
 import 'package:project/ui/widget/snackbar_utils.dart';
@@ -20,7 +21,10 @@ class TasksPage extends StatelessWidget {
           title: Text(isAll ? "All tasks" : "Completed tasks"),
           actions: [
             IconButton(
-              icon: Icon(Icons.add),
+              key: Key("addicon"),
+              icon: Icon(
+                Icons.add,
+              ),
               onPressed: () => navigate(context, true, null),
             )
           ],
@@ -70,17 +74,24 @@ class _TaskWidget extends StatelessWidget {
   final TaskModel task;
   _TaskWidget(this.task, this.taskViewModel);
 
-  void _delete(BuildContext context) {
-    taskViewModel.deleteTask(task.id);
-    showScaffoldSnackbar("Task deleted", context);
+  void _delete(BuildContext context) async {
+    final result = await taskViewModel.deleteTask(task.id);
+    result.fold((l) => showScaffoldSnackbar(l.message, context),
+        (r) => showScaffoldSnackbar("Task deleted", context));
   }
 
-  void _toggleComplete(BuildContext context) {
-    task.isTaskCompleted
-        ? taskViewModel.unCompleteTask(task.id)
-        : taskViewModel.completeTask(task.id);
-    showScaffoldSnackbar(
-        task.isTaskCompleted ? "Task incompleted" : "Task completed", context);
+  void _toggleComplete(BuildContext context) async {
+    Either<AppError, Success> result;
+    if (task.isTaskCompleted) {
+      result = await taskViewModel.unCompleteTask(task.id);
+    } else {
+      result = await taskViewModel.completeTask(task.id);
+    }
+    result.fold(
+        (l) => showScaffoldSnackbar(l.message, context),
+        (r) => showScaffoldSnackbar(
+            task.isTaskCompleted ? "Task incompleted" : "Task completed",
+            context));
   }
 
   @override
