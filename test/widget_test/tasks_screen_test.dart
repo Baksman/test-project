@@ -21,8 +21,8 @@ class MockNavigationObserver extends Mock implements NavigatorObserver {}
 final mockObserver = MockNavigationObserver();
 
 class MockTaskViewModel extends Mock implements TaskViewModel {
-  bool _isLoading = false;
-  bool get isLoading => _isLoading;
+  // bool _isLoading = false;
+  // bool get isLoading => _isLoading;
   final FirebaseMock firebaseService;
   StreamController _allTaskController =
       StreamController<Either<AppError, List<TaskModel>>>.broadcast();
@@ -61,16 +61,16 @@ class MockTaskViewModel extends Mock implements TaskViewModel {
   }
 
   Future<Either<AppError, Success>> addTask(TaskModel task) async {
-    _setState(true);
+    // _setState(true);
     final result = await firebaseService.addTask(tTaskModel);
-    _setState(false);
+    // _setState(false);
     return result.fold((l) => Left(AppError(l.message)), (r) => Right(r));
   }
 
-  _setState(bool isLoading) {
-    _isLoading = isLoading;
-    // notifyListeners();
-  }
+  // _setState(bool isLoading) {
+  //   _isLoading = isLoading;
+  //   // notifyListeners();
+  // }
 }
 
 void main() async {
@@ -135,7 +135,7 @@ void main() async {
           isAll: true,
         ),
       ));
-
+      when(mk.isLoading).thenAnswer((realInvocation) => true);
       final addIcon = find.byKey(Key("addicon"));
       final addTaskAppBar = find.byKey(Key("add-task"));
 
@@ -188,6 +188,7 @@ void main() async {
 
   testWidgets("Should navigate to add from all task screeen on tap of + icon ",
       (tester) async {
+    when(mk.isLoading).thenAnswer((realInvocation) => false);
     await tester.pumpWidget(wrapper(
       child: const TasksPage(
         isAll: false,

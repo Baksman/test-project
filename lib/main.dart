@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:project/repository/repository.dart';
 import 'package:project/ui/screens/home_screen.dart';
+import 'package:project/ui/screens/search_screen.dart';
 import 'package:project/ui/screens/task_screen.dart';
 import 'package:project/viewmodel/bottom_navbar.dart';
 import 'package:project/viewmodel/items_viewmodel.dart';
@@ -23,7 +24,6 @@ class MyApp extends StatelessWidget {
   final firebase = FirebaseFirestore.instance;
   @override
   Widget build(BuildContext context) {
-
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => BottomNavbarViewmodel()),
@@ -39,6 +39,11 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.blue,
         ),
         home: Home(),
+        routes: <String, WidgetBuilder>{
+          SearchScreen.routeName: (_) {
+            return SearchScreen();
+          }
+        },
       ),
     );
   }

@@ -113,7 +113,7 @@ class _AddTaskPage extends State<AddTaskPage> {
                         child: provider.isLoading
                             ? CircularProgressIndicator(
                                 backgroundColor: Colors.teal,
-                                key: Key("progress"),
+                                key: Key("progressI"),
                               )
                             : Text(
                                 widget.isNew ? 'Create' : 'Update',

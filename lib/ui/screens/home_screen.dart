@@ -1,24 +1,36 @@
-import 'package:dartz/dartz.dart';
+import 'package:dartz/dartz.dart' as dz;
 import 'package:flutter/material.dart';
 import 'package:project/datasources/source_response/error.dart';
 import 'package:project/models/item.dart';
 import 'package:project/ui/screens/home_screen_details.dart';
 import 'package:project/viewmodel/items_viewmodel.dart';
 import 'package:provider/provider.dart';
-import 'package:search_widget/search_widget.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
   final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();
+  ItemViewmodel itemViewmodel;
+  @override
+  void initState() {
+    itemViewmodel = Provider.of<ItemViewmodel>(context,listen: false);
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final itemProvider = Provider.of<ItemViewmodel>(context);
     return ScaffoldMessenger(
       key: scaffoldMessengerKey,
       child: Scaffold(
-        appBar: AppBar(title: Text("Home"),),
-        body: FutureBuilder<Either<AppError, List<Item>>>(
-          future: itemProvider.getItem(),
+        appBar: AppBar(
+          title: Text("Home"),
+        ),
+        body: FutureBuilder<dz.Either<AppError, List<Item>>>(
+          future: itemViewmodel.getItem(),
           builder: (ctx, snapshot) {
             if (!snapshot.hasData) {
               return Center(
@@ -27,57 +39,63 @@ class HomePage extends StatelessWidget {
             }
             return snapshot.data.fold(
               (AppError error) => Center(child: Text(error.message)),
-              (List<Item> items) => itemsWidget(items, context),
+              (List<Item> items) => Items(),
             );
           },
         ),
       ),
     );
   }
+}
 
-  Widget itemsWidget(List<Item> items, BuildContext context) {
+class Items extends StatelessWidget {
+  final FocusNode _focusNode = FocusNode();
+  final TextEditingController _textEditingController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    final itemViewmodel = Provider.of<ItemViewmodel>(context);
     return Column(
       children: [
-        SearchWidget<Item>(
-          dataList: items,
-          hideSearchBoxWhenItemSelected: false,
-          listContainerHeight: MediaQuery.of(context).size.height / 4,
-          queryBuilder: (String query, List<Item> list) {
-            return list
-                .where((Item item) => item.title.contains(query.toLowerCase()))
-                .toList();
+        GestureDetector(
+          onTap: () {
+            _focusNode.unfocus();
           },
-          popupListItemBuilder: (Item item) {
-            return ListTile(
-              leading: Text(item.id.toString()),
-              title: Text(item.title),
-            );
-          },
-          selectedItemBuilder:
-              (Item selectedItem, VoidCallback deleteSelectedItem) {
-            return Text(selectedItem.title);
-          },
-          // widget customization
-          noItemsFoundWidget: Text("No item found"),
-          textFieldBuilder:
-              (TextEditingController controller, FocusNode focusNode) {
-            return MyTextField(controller, focusNode);
-          },
+          child: Container(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: TextField(
+                decoration: InputDecoration(
+                    suffixIcon: IconButton(
+                  icon: Icon(Icons.cancel),
+                  onPressed: () {
+                    _textEditingController.clear();
+                  },
+                )),
+                controller: _textEditingController,
+                focusNode: _focusNode,
+                onChanged: (searchString) {
+                  print(searchString);
+                  itemViewmodel.searchItems(searchString);
+                },
+              ),
+            ),
+          ),
         ),
         Expanded(
           child: ListView.builder(
-              itemCount: items.length,
+              itemCount: itemViewmodel.searchItem?.length ?? 0,
               itemBuilder: (ctx, index) {
                 return ListTile(
                   onTap: () {
                     Navigator.push(context, MaterialPageRoute(builder: (ctx) {
                       return HomeScreenDetails(
-                        item: items[index],
+                        item: itemViewmodel.searchItem[index],
                       );
                     }));
                   },
-                  leading: Text(items[index].id.toString()),
-                  title: Text(items[index].title),
+                  leading: Text(itemViewmodel.searchItem[index].id.toString()),
+                  title: Text(itemViewmodel.searchItem[index].title),
                 );
               }),
         ),
