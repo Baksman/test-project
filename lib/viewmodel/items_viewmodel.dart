@@ -22,8 +22,13 @@ class ItemViewmodel extends ChangeNotifier {
     // if it has items
     if (result.isRight())
       _allItems = result.fold((l) => l, (r) => r) as List<Item>;
-    // notifyListeners();
+    notifyListeners();
     return result;
+  }
+
+  void resetList() {
+    _searchItems = _allItems;
+    notifyListeners();
   }
 
   searchItems(String searchString) {

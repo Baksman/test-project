@@ -15,7 +15,7 @@ class LocalServiceImpl implements LocalService {
   final LocalStorage storage;
   LocalServiceImpl(this.storage);
   Future<void> saveItem(List<dynamic> item) async {
-    // must be in json
+    // must be in json format
     storage.setItem('item', item);
   }
 

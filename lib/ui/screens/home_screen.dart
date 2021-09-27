@@ -17,7 +17,7 @@ class _HomePageState extends State<HomePage> {
   ItemViewmodel itemViewmodel;
   @override
   void initState() {
-    itemViewmodel = Provider.of<ItemViewmodel>(context,listen: false);
+    itemViewmodel = Provider.of<ItemViewmodel>(context, listen: false);
     super.initState();
   }
 
@@ -70,6 +70,7 @@ class Items extends StatelessWidget {
                   icon: Icon(Icons.cancel),
                   onPressed: () {
                     _textEditingController.clear();
+                    itemViewmodel.resetList();
                   },
                 )),
                 controller: _textEditingController,
@@ -100,49 +101,6 @@ class Items extends StatelessWidget {
               }),
         ),
       ],
-    );
-  }
-}
-
-class MyTextField extends StatelessWidget {
-  const MyTextField(this.controller, this.focusNode);
-
-  final TextEditingController controller;
-  final FocusNode focusNode;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-      child: TextField(
-        controller: controller,
-        focusNode: focusNode,
-        style: TextStyle(fontSize: 16, color: Colors.grey[600]),
-        decoration: InputDecoration(
-          enabledBorder: const OutlineInputBorder(
-            borderSide: BorderSide(
-              color: Color(0x4437474F),
-            ),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Theme.of(context).primaryColor),
-          ),
-          suffixIcon: IconButton(
-            icon: Icon(Icons.clear),
-            onPressed: () {
-              controller.clear();
-            },
-          ),
-          border: InputBorder.none,
-          hintText: "Search here...",
-          contentPadding: const EdgeInsets.only(
-            left: 16,
-            right: 20,
-            top: 14,
-            bottom: 14,
-          ),
-        ),
-      ),
     );
   }
 }

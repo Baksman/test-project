@@ -29,12 +29,12 @@ void main() async {
 
       await tester.enterText(firstTextInput, "This is the first title");
       await tester.enterText(secondTextInput, "This is the first description");
-      when(mk.isLoading).thenAnswer((realInvocation) => true);
-      await tester.pump(Duration.zero);
-      expect(progressIndicator, findsOneWidget);
-      await tester.tap(submitButton);
-      when(mk.isLoading).thenAnswer((realInvocation) => false);
-      await tester.pump(Duration.zero);
+      // when(mk.isLoading).thenAnswer((realInvocation) => true);
+      // await tester.pump(Duration.zero);
+      // // expect(progressIndicator, findsOneWidget);
+      // await tester.tap(submitButton);
+      // when(mk.isLoading).thenAnswer((realInvocation) => false);
+      // await tester.pump(Duration.zero);
 
       // expect to find a snackbar!
     });

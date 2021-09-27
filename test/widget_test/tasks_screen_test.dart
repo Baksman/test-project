@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:math';
+// import 'dart:math';
 import 'package:dartz/dartz.dart';
 import 'package:firebase_core/firebase_core.dart' as fire;
 import 'package:flutter/material.dart';
@@ -135,7 +135,7 @@ void main() async {
           isAll: true,
         ),
       ));
-      when(mk.isLoading).thenAnswer((realInvocation) => true);
+      when(mk.isLoading).thenAnswer((realInvocation) => false);
       final addIcon = find.byKey(Key("addicon"));
       final addTaskAppBar = find.byKey(Key("add-task"));
 
