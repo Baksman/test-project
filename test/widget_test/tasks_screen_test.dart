@@ -27,6 +27,11 @@ class MockTaskViewModel extends Mock implements TaskViewModel {
   StreamController _allTaskController =
       StreamController<Either<AppError, List<TaskModel>>>.broadcast();
   MockTaskViewModel(this.firebaseService);
+
+  clean() {
+    _allTaskController.close();
+  }
+
   final tTaskModel = TaskModel(
       title: "New task",
       isCompleted: false,
